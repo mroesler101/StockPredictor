@@ -1,0 +1,50 @@
+openapi: 3.0.0
+info:
+  version: 0.0.3-oas3
+  title: StockPredictor
+  description: Stock Ticker Price Predictor
+  contact:
+    name: Max Roesler
+servers:
+  - url: 'http://localhost:8080/predictor'
+paths:
+  /timeframe/{start}/{end}/:
+    post:
+      tags:
+        - TIMEFRAME
+      summary: Start & end time of model
+      operationId: nasdaq.timeframe
+      description: Collects stock info within timeframe
+      parameters:
+           - in: path
+             name: start
+             required: true
+             schema:
+              type: array
+              items:
+               type: number
+              minItems: 3
+              maxItems: 3
+           - in: path
+             name: end
+             required: true
+             schema:
+              type: array
+              items:
+               type: number
+              minItems: 3
+              maxItems: 3
+      responses:
+        '200':
+          description: Successful dates & store dataframe of stocks
+        '405':
+          description: The inputs must be numbers
+  /nasdaq/<ticker>/<days>/:
+    get:
+      tags:
+        - TICKER
+      operationId: nasdaq.nasdaq
+      description: Uses ticker to predict stock price in number of days
+      responses:
+        '200':
+          description: Graph of predicted price
