@@ -70,6 +70,9 @@ def nasdaq(ticker, days):
   if (days < 2):
     print("Invalid number of days to predict")
     return
+  if stock_final.query("Name == '{}'".format(ticker)).empty:
+    print("Invalid NASDAQ ticker or information not found")
+    return
   st = stock_final.query("Name == '{}'".format(ticker))
   st = st.drop(columns=['Name'])
   st.plot(y='Adj Close') 
