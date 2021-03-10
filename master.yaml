@@ -45,6 +45,19 @@ paths:
         - TICKER
       operationId: nasdaq.nasdaq
       description: Uses ticker to predict stock price in number of days
+      parameters:
+           - in: query
+             name: ticker
+             required: true
+             schema:
+              type: string
+           - in: query
+             name: days
+             required: true
+             schema:
+              type: number
       responses:
         '200':
           description: Graph of predicted price
+        '405':
+          description: The inputs need to be correct
