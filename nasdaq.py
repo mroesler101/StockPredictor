@@ -13,6 +13,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVR
+from joblib import dump, load 
 
 # List of stocks in NASDAQ found from towardsdatascience.com to have a collection of stocks to form a model
 url="https://pkgstore.datahub.io/core/nasdaq-listings/nasdaq-listed_csv/data/7665719fb51081ba0bd834fde71ce822/nasdaq-listed_csv.csv"
@@ -63,9 +64,11 @@ def timeframe(start, end):
             stock_final = stock_final.append(stock,sort=False)
     except Exception:
         None
+  dump(stock_final, 'ticker.pkl')
   return stock_final;
 
 def nasdaq(ticker, days):
+  stock_final = load('ticker.pkl')
   days = int(days)
   if (days < 2):
     print("Invalid number of days to predict")
