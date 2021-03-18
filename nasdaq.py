@@ -66,6 +66,11 @@ def timeframe(start, end):
   dump(stock_final, 'ticker.pkl')
   return stock_final;
 
+start = [2020, 12, 1]
+end = [2021, 1, 1]
+#stock_final = timeframe(start, end)
+timeframe(start,end)
+
 def nasdaq(ticker, days):
   stock_final = load('ticker.pkl')
   days = int(days)
@@ -136,5 +141,6 @@ def nasdaq(ticker, days):
 # When day 0 is the lowest, that means that the stock price is predicted to go down
   return
 
-stock_final = timeframe(start, end)
-nasdaq(ticker, days)
+#stock_final = timeframe(start, end)
+#nasdaq(ticker, days)
+nasdaq('AMZN', 2)
