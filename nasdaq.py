@@ -1,7 +1,7 @@
 # I used this source to help me find a huge NASDAQ csv file containing stock names: https://towardsdatascience.com/downloading-historical-stock-prices-in-python-93f85f059c1f
 # Market categories feature in CSV file: Q = NASDAQ Global Select MarketSM; G = NASDAQ Global MarketSM; S = NASDAQ Capital Market
 # Round lot size feature: securities to be traded on exchange (typically 100)
-!pip install --upgrade yfinance
+#pip install --upgrade yfinance
 import yfinance as yf # Yahoo finance will provide historical stock prices to use for the predictions
 import datetime
 import time
@@ -15,13 +15,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.svm import SVR
 from joblib import dump, load 
 
-# List of stocks in NASDAQ found from towardsdatascience.com to have a collection of stocks to form a model
-url="https://pkgstore.datahub.io/core/nasdaq-listings/nasdaq-listed_csv/data/7665719fb51081ba0bd834fde71ce822/nasdaq-listed_csv.csv"
-s = requests.get(url).content
-companies = pd.read_csv(io.StringIO(s.decode('utf-8')))
-Symbols = companies['Symbol'].tolist() #create list for the various companies
-
 def timeframe(start, end):
+  # List of stocks in NASDAQ found from towardsdatascience.com to have a collection of stocks to form a model
+  url="https://pkgstore.datahub.io/core/nasdaq-listings/nasdaq-listed_csv/data/7665719fb51081ba0bd834fde71ce822/nasdaq-listed_csv.csv"
+  s = requests.get(url).content
+  companies = pd.read_csv(io.StringIO(s.decode('utf-8')))
+  Symbols = companies['Symbol'].tolist() #create list for the various companies
   sty = int(start[0])
   stm = int(start[1])
   std = int(start[2])
