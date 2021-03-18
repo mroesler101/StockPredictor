@@ -6,14 +6,21 @@ all: start
 docker-all: docker-build docker-start
 	@echo "DONE"
 
+docker-alli: docker-build docker-inter
+	@echo "Done"
+
 docker-build:
 	@echo "building the image from docker file..."
-	docker build --pull -t file_example .
+	docker build --no-cache --pull -t svmiris .
 	@echo "image DONE"
 
 docker-start:
 	@echo "starting the NEW service in container..."
-	docker run -p 8080:8080 file_example
+	docker run -p 8080:8080 svmiris
+
+docker-inter:
+	@echo "starting service interactively..."
+	docker run -p 8080:8080 -it svmiris
 
 service:
 	@echo "creating the service..."
@@ -22,6 +29,8 @@ service:
 
 start:  
 	@echo "starting the NEW service..."
+	pip install --upgrade pip
+	pip install -r requirements.txt
 	python server.py
 
 docker-stop:
@@ -31,7 +40,7 @@ docker-stop:
 
 docker-remove:
 	@echo "removing the image..."
-	docker rmi -f file_example
+	docker rmi -f svmtest
 	@echo "image removed"
 
 docker-clean: docker-stop docker-remove
