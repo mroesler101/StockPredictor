@@ -27,6 +27,10 @@ def timeframe(start, end):
   ey = int(end[0])
   em = int(end[1])
   ed = int(end[2])
+  if (stm > 12) or (em > 12):
+    print("Invalid month")
+  if (std > 31) or (ed > 31):
+    print("Invalid day")
   if (sty > ey):
     print("Start year must be lower than end year")
     return
@@ -63,16 +67,11 @@ def timeframe(start, end):
             stock_final = stock_final.append(stock,sort=False)
     except Exception:
         None
-  dump(stock_final, 'ticker.pkl')
+  dump(stock_final, 'ticker2.pkl')
   return stock_final;
 
-start = [2020, 12, 1]
-end = [2021, 1, 1]
-#stock_final = timeframe(start, end)
-timeframe(start,end)
-
 def nasdaq(ticker, days):
-  stock_final = load('ticker.pkl')
+  stock_final = load('ticker2.pkl')
   days = int(days)
   if (days < 2):
     print("Invalid number of days to predict")
@@ -124,10 +123,6 @@ def nasdaq(ticker, days):
   print(y_pred)
   print("SVR score:", regressor.score(x_test,y_test))
 
-  plt.title('Support Vector Regression Model: Days V. Predicted Adj. Closing Price')
-  plt.ylabel('Predicted Stock Price Average ($)')
-  plt.xlabel('Time (Days)')
-  plt.plot(y_pred)
   count=y_pred[0]
   day=0
   max = y_pred[0]
@@ -139,7 +134,17 @@ def nasdaq(ticker, days):
   if (day==0):
     print("This means that the stock price is predicted to go down in the next", days, "days")
 # When day 0 is the lowest, that means that the stock price is predicted to go down
+  plt.title('Support Vector Regression Model: Days V. Predicted Adj. Closing Price')
+  plt.ylabel('Predicted Stock Price Average ($)')
+  plt.xlabel('Time (Days)')
+  plt.plot(y_pred)
+  plt.show()
   return
+
+start = [2020, 11, 1]
+end = [2021, 1, 1]
+#stock_final = timeframe(start, end)
+timeframe(start,end)
 
 #stock_final = timeframe(start, end)
 #nasdaq(ticker, days)

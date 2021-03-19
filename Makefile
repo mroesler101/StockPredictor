@@ -11,16 +11,16 @@ docker-alli: docker-build docker-inter
 
 docker-build:
 	@echo "building the image from docker file..."
-	docker build --no-cache --pull -t svmiris .
+	docker build --no-cache --pull -t svrstock .
 	@echo "image DONE"
 
 docker-start:
 	@echo "starting the NEW service in container..."
-	docker run -p 8080:8080 svmiris
+	docker run -p 8080:8080 svrstock
 
 docker-inter:
 	@echo "starting service interactively..."
-	docker run -p 8080:8080 -it svmiris
+	docker run -p 8080:8080 -it svrstock
 
 service:
 	@echo "creating the service..."
