@@ -16,21 +16,12 @@ from sklearn.svm import SVR
 from joblib import dump, load 
 
 def timeframe(start, end):
-  # List of stocks in NASDAQ found from towardsdatascience.com to have a collection of stocks to form a model
-  url="https://pkgstore.datahub.io/core/nasdaq-listings/nasdaq-listed_csv/data/7665719fb51081ba0bd834fde71ce822/nasdaq-listed_csv.csv"
-  s = requests.get(url).content
-  companies = pd.read_csv(io.StringIO(s.decode('utf-8')))
-  Symbols = companies['Symbol'].tolist() #create list for the various companies
   sty = int(start[0])
   stm = int(start[1])
   std = int(start[2])
   ey = int(end[0])
   em = int(end[1])
   ed = int(end[2])
-  if (stm > 12) or (em > 12):
-    print("Invalid month")
-  if (std > 31) or (ed > 31):
-    print("Invalid day")
   if (sty > ey):
     print("Start year must be lower than end year")
     return
@@ -44,34 +35,14 @@ def timeframe(start, end):
         return
   start = datetime.datetime(sty,stm,std) # Start and end time to look at stock history (1 month from november-december 2020 in this model)
   end = datetime.datetime(ey,em,ed)
-# use arguments to find date 
-# This creates an empty list
-
-  stock_final = pd.DataFrame()
-# Go through every symbol that we added to the list
-  for i in Symbols:  
-    
-    # This prints each symbol that is being acquired for
-    print( str(Symbols.index(i)) + str(' : ') + i, sep=',', end=',', flush=True)  
-    
-    try:
-        # Yahoo Finance - finds and collects the information needed to complete the dataframe and list for predictions
-        stock = []
-        stock = yf.download(i,start=start, end=end, progress=False)
-        
-        # This appends the individual stock prices to the list
-        if len(stock) == 0:
-            None
-        else:
-            stock['Name']=i
-            stock_final = stock_final.append(stock,sort=False)
-    except Exception:
-        None
-  dump(stock_final, 'ticker2.pkl')
-  return stock_final;
+  dump(start, 'start.pkl')
+  dump(end,'end.pkl')
+  return start, end
 
 def nasdaq(ticker, days):
-  stock_final = load('ticker2.pkl')
+  stock_final = load('ticker.pkl')
+  start = load('start.pkl')
+  end = load('end.pkl')
   days = int(days)
   if (days < 2):
     print("Invalid number of days to predict")
@@ -79,8 +50,9 @@ def nasdaq(ticker, days):
   if stock_final.query("Name == '{}'".format(ticker)).empty:
     print("Invalid NASDAQ ticker or information not found")
     return
-  st = stock_final.query("Name == '{}'".format(ticker))
-  st = st.drop(columns=['Name'])
+  #st = stock_final.query("Name == '{}'".format(ticker))
+  st = yf.download(ticker,start=start, end=end, progress=False)
+  #st = st.drop(columns=['Name'])
   st.plot(y='Adj Close') 
   plt.title('Date V. Actual Adj. Closing Price')
   plt.xlabel('Date (Days)')
@@ -95,7 +67,7 @@ def nasdaq(ticker, days):
   # Remove all names to make fitting and training accurate with just the numbers in the adjusted closing price (corporate decisions)
   
   #days = 2 # Number of days you want to predict
-#Makes another column called prediction
+  #Makes another column called prediction
 
   st['Prediction'] = st[['Adj Close']].shift(-days)
 
@@ -115,6 +87,14 @@ def nasdaq(ticker, days):
 
 # drops all days before the prediction column, saves only # of days to graph
   stockprice = np.array(st.drop(['Prediction'],1))[-days:]
+
+ # from sklearn.linear_model import LinearRegression
+ # lr = LinearRegression()
+# Train the model
+ # lr.fit(x_train, y_train)
+ # prediction = lr.predict(stockprice)
+ # print(prediction)
+ # plt.plot(prediction)
 
   regressor = SVR(kernel = 'poly')
   regressor.fit(x_train, y_train)
@@ -137,15 +117,12 @@ def nasdaq(ticker, days):
   plt.title('Support Vector Regression Model: Days V. Predicted Adj. Closing Price')
   plt.ylabel('Predicted Stock Price Average ($)')
   plt.xlabel('Time (Days)')
+  plt.ticklabel_format(useOffset=False)
   plt.plot(y_pred)
   plt.show()
   return
 
-start = [2020, 11, 1]
+start = [2020, 12, 1]
 end = [2021, 1, 1]
-#stock_final = timeframe(start, end)
-timeframe(start,end)
-
-#stock_final = timeframe(start, end)
-#nasdaq(ticker, days)
+timeframe(start, end)
 nasdaq('AMZN', 2)

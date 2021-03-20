@@ -5,7 +5,7 @@ from joblib import load
 
 #load the model
 
-#stock_final = load('ticker.pkl')
+stock_final = load('ticker2.pkl')
 
 # Create the application instance
 app = connexion.App(__name__, specification_dir="./")
