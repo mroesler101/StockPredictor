@@ -6,9 +6,9 @@ info:
   contact:
     name: Max Roesler
 servers:
-  - url: 'http://localhost:8080/predictor'
+  - url: 'http://localhost:8080/'
 paths:
-  /timeframe/{start}/{end}/:
+  /timeframe/<start>/<end>/:
     post:
       tags:
         - TIMEFRAME
@@ -16,22 +16,22 @@ paths:
       operationId: nasdaq.timeframe
       description: Collects stock info within timeframe
       parameters:
-           - in: path
+           - in: query
              name: start
              required: true
              schema:
-              type: array
+              type: string
               items:
-               type: number
+               type: string
               minItems: 3
               maxItems: 3
-           - in: path
+           - in: query
              name: end
              required: true
              schema:
-              type: array
+              type: string
               items:
-               type: number
+               type: string
               minItems: 3
               maxItems: 3
       responses:
@@ -46,16 +46,16 @@ paths:
       operationId: nasdaq.nasdaq
       description: Uses ticker to predict stock price in number of days
       parameters:
-           - in: query
+           - in: path
              name: ticker
              required: true
              schema:
               type: string
-           - in: query
+           - in: path
              name: days
              required: true
              schema:
-              type: number
+              type: string
       responses:
         '200':
           description: Graph of predicted price

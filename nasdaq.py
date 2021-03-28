@@ -67,6 +67,8 @@ def collectDataframe(start, end):
   return stock_final
 
 def timeframe(start, end):
+  start = [int(s) for s in start.split('-')]
+  end = [int(s) for s in end.split('-')]
   sty = int(start[0])
   stm = int(start[1])
   std = int(start[2])

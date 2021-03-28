@@ -6,24 +6,25 @@ from nasdaq import nasdaq, timeframe
 
 #load the model
 
-#stock_final = load('ticker2.pkl')
+stock_final = load('ticker.pkl')
 
 # Create the application instance
-#app = connexion.App(__name__, specification_dir="./")
+app = connexion.App(__name__, specification_dir="./")
 
 # Read the yaml file to configure the endpoints
-#app.add_api("master.yaml")
+app.add_api("master.yaml")
 
 # create a URL route in our application for "/"
 
-app = Flask(__name__)
+@app.route("/")
+def home():
+    msg = {"begin": "NASDAQ Adjusted Closing Price Stock Predictor Application by Max Roesler", "Function 1": "Update Timeframe - /timeframe/<start>/<end>", "Function 2": "Get Prediction - /nasdaq/<ticker>/<days>"}
+    return jsonify(msg)
 
 @app.route('/timeframe/<start>/<end>')
 def update(start=None, end=None):
     if not start or not end:
         return jsonify({"Status" : "Error", "Message" : "Invalid Date Format. Please use the date format as YYYY-MM-DD."})
-    start = [int(s) for s in start.split('-')]
-    end = [int(s) for s in end.split('-')]
     timeframe(start, end)
     return jsonify({"Status" : "Success", "Message" : "Timeframe Updated"})
 
@@ -34,7 +35,7 @@ def get(ticker=None, days=None):
     try:
         pred = nasdaq(ticker, days)
     except FileNotFoundError:
-        return jsonify({"Status" : "Error", "Message" : "Please run localhost/update/<start>/<end>"})
+        return jsonify({"Status" : "Error", "Message" : "Please run localhost/timeframe/<start>/<end>"})
     return jsonify({"Status" : "Success", "Ticker" : str(ticker), "Prediction" : str(pred)})
 
 if __name__ == "__main__":
