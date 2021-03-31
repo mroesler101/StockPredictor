@@ -9,36 +9,36 @@ servers:
   - url: 'http://localhost:8080/'
 paths:
   /timeframe/<start>/<end>/:
-    post:
+    get:
       tags:
         - TIMEFRAME
       summary: Start & end time of model
       operationId: nasdaq.timeframe
-      description: Collects stock info within timeframe
+      description: Updates timeframe to use for stock prediction
       parameters:
-           - in: query
+           - in: path
              name: start
              required: true
              schema:
               type: string
               items:
-               type: string
+               type: number
               minItems: 3
               maxItems: 3
-           - in: query
+           - in: path
              name: end
              required: true
              schema:
               type: string
               items:
-               type: string
+               type: number
               minItems: 3
               maxItems: 3
       responses:
         '200':
-          description: Successful dates & store dataframe of stocks
+          description: Successfully updated dates
         '405':
-          description: The inputs must be numbers
+          description: The inputs are invalid
   /nasdaq/<ticker>/<days>/:
     get:
       tags:
@@ -58,6 +58,6 @@ paths:
               type: string
       responses:
         '200':
-          description: Graph of predicted price
+          description: Predicted prices
         '405':
           description: The inputs need to be correct

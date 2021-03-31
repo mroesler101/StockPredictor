@@ -14,6 +14,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.svm import SVR
 from joblib import dump, load 
 from sklearn.preprocessing import StandardScaler
+import json
 
 def collectDataframe(start, end):
   # List of stocks in NASDAQ found from towardsdatascience.com to have a collection of stocks to form a model
@@ -67,8 +68,10 @@ def collectDataframe(start, end):
   return stock_final
 
 def timeframe(start, end):
-  start = [int(s) for s in start.split('-')]
-  end = [int(s) for s in end.split('-')]
+  #start = [int(s) for s in start.split('-')]
+  #end = [int(s) for s in end.split('-')]
+  start = start.split('-')
+  end = end.split('-')
   sty = int(start[0])
   stm = int(start[1])
   std = int(start[2])
@@ -76,38 +79,32 @@ def timeframe(start, end):
   em = int(end[1])
   ed = int(end[2])
   if (sty > ey):
-    print("Start year must be lower than end year")
-    return
+    return("Start year must be lower than end year")
   if (sty == ey):
     if (stm > em):
-      print("End month has to be after start month")
-      return
+      return("End month has to be after start month")
     if (stm == em):
       if (std > ed):
-        print("End day has to be after start day")
-        return
-  start = datetime.datetime(sty,stm,std) # Start and end time to look at stock history (1 month from november-december 2020 in this model)
-  end = datetime.datetime(ey,em,ed)
+        return("End day has to be after start day")
+  start = (sty, stm, std)
+  end = (ey, em, ed)
   dump(start, 'start.pkl')
-  dump(end,'end.pkl')
-  return start, end
-
-#stock_final = timeframe(start, end)
-#timeframe(start,end)
+  dump(end, 'end.pkl')
+  return "Time Update of Adjusted Stock Prices: Successful"
 
 def nasdaq(ticker, days):
   stock_final = load('ticker.pkl')
   start = load('start.pkl')
   end = load('end.pkl')
+  start = datetime.datetime(start[0], start[1], start[2]) # Start and end time to look at stock history (1 month from november-december 2020 in this model)
+  end = datetime.datetime(end[0], end[1], end[2])
   days = int(days)
   if (days < 2):
-    print("Invalid number of days to predict")
-    return
+    return("Invalid number of days to predict")
   if stock_final.query("Name == '{}'".format(ticker)).empty:
-    print("Invalid NASDAQ ticker or information not found")
-    return
-  #st = stock_final.query("Name == '{}'".format(ticker))
+    return("Invalid NASDAQ ticker or information not found")
   st = yf.download(ticker,start=start, end=end, progress=False)
+  
   #st = st.drop(columns=['Name'])
   #st.plot(y='Adj Close') 
   #plt.title('Date V. Actual Adj. Closing Price')
@@ -115,16 +112,7 @@ def nasdaq(ticker, days):
   #plt.ylabel('Adj. Closing Price ($)')
   #plt.show()  
 
-  #st = my_tick('AAPL')
-
-  #stock_final
-  #st = stock_final.query("Name == 'AMZN'") # This line is vital for the program to pick a specific stock to look into
-  #st = st.drop(columns=['Name'])
-  # Remove all names to make fitting and training accurate with just the numbers in the adjusted closing price (corporate decisions)
-  
-  #days = 2 # Number of days you want to predict
   #Makes another column called prediction
-
   st['Prediction'] = st[['Adj Close']].shift(-days)
 
   X = np.array(st.drop(['Prediction'],1))
@@ -144,31 +132,21 @@ def nasdaq(ticker, days):
 # drops all days before the prediction column, saves only # of days to graph
   stockprice = np.array(st.drop(['Prediction'],1))[-days:]
 
- # from sklearn.linear_model import LinearRegression
- # lr = LinearRegression()
-# Train the model
- # lr.fit(x_train, y_train)
- # prediction = lr.predict(stockprice)
- # print(prediction)
- # plt.plot(prediction)
-
   regressor = SVR(kernel = 'poly')
   regressor.fit(x_train, y_train)
   y_pred = regressor.predict(stockprice)
 
-  print(y_pred)
-  print("SVR score:", regressor.score(x_test,y_test))
-
   count=y_pred[0]
   day=0
   max = y_pred[0]
-  for i in range(0,days-1):
-    if (y_pred[i] < y_pred[i+1]):
-      max = y_pred[i+1]
-      day = i+2 # for the accurate number of days and not the array number
-  print("The highest predicted price in", days, "days is day", day, f"with a predicted price of ${round(max, 2)}")
+  for i in range(0,days):
+    if (y_pred[i] > max):
+      max = y_pred[i]
+      day = i+1 # for the accurate number of days and not the array number
+  analysis = []
+  analysis.append(f"The highest predicted price in {days} days is day {day} with a predicted price of ${round(max, 2)} and an SVR score of: {regressor.score(x_test,y_test)}")
   if (day==0):
-    print("This means that the stock price is predicted to go down in the next", days, "days")
+    analysis.append(f"This means that the stock price is predicted to go down in the next {days} days")
 # When day 0 is the lowest, that means that the stock price is predicted to go down
   #plt.title(f'{ticker} SVR Model: Days V. Predicted Adj. Closing Price')
   #plt.ylabel('Predicted Stock Price Average ($)')
@@ -176,5 +154,6 @@ def nasdaq(ticker, days):
   #plt.ticklabel_format(useOffset=False)
   #plt.plot(y_pred)
   #plt.show()
-  return y_pred
-
+  
+  analysis.append(f"Prediction: {str(y_pred)}")
+  return analysis
