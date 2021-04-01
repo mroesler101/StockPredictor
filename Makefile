@@ -40,7 +40,7 @@ docker-stop:
 
 docker-remove:
 	@echo "removing the image..."
-	docker rmi -f svmtest
+	docker rmi -f svrstock
 	@echo "image removed"
 
 docker-clean: docker-stop docker-remove
