@@ -1,4 +1,4 @@
-def my_tick(ticker):
+def my_tick(ticker): #checking if ticker is in dataframe, plot
     st = stock_final.query("Name == '{}'".format(ticker))
     st = st.drop(columns=['Name'])
     st.plot(y='Adj Close') 

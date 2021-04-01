@@ -1,4 +1,4 @@
-def days(days):
+def days(days): #prediction after days are given
   st['Prediction'] = st[['Adj Close']].shift(-days)
   
   X = np.array(st.drop(['Prediction'],1))
