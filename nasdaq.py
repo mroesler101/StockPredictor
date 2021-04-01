@@ -22,6 +22,8 @@ def collectDataframe(start, end):
   s = requests.get(url).content
   companies = pd.read_csv(io.StringIO(s.decode('utf-8')))
   Symbols = companies['Symbol'].tolist() #create list for the various companies
+  start = start.split('-')
+  end = end.split('-')
   sty = int(start[0])
   stm = int(start[1])
   std = int(start[2])
@@ -29,21 +31,20 @@ def collectDataframe(start, end):
   em = int(end[1])
   ed = int(end[2])
   if (sty > ey):
-    print("Start year must be lower than end year")
-    return
+    return("Start year must be lower than end year")
   if (sty == ey):
     if (stm > em):
-      print("End month has to be after start month")
-      return
+      return("End month has to be after start month")
     if (stm == em):
       if (std > ed):
-        print("End day has to be after start day")
-        return
+        return("End day has to be after start day")
+  start = (sty, stm, std)
+  end = (ey, em, ed)
   start = datetime.datetime(sty,stm,std) # Start and end time to look at stock history (1 month from november-december 2020 in this model)
   end = datetime.datetime(ey,em,ed)
 # use arguments to find date 
-# This creates an empty list
 
+# This creates an empty list
   stock_final = pd.DataFrame()
 # Go through every symbol that we added to the list
   for i in Symbols:  
@@ -65,11 +66,9 @@ def collectDataframe(start, end):
     except Exception:
         None
   dump(stock_final, 'ticker.pkl')
-  return stock_final
+  return "Update NASDAQ Stock Tickers: Successful"
 
 def timeframe(start, end):
-  #start = [int(s) for s in start.split('-')]
-  #end = [int(s) for s in end.split('-')]
   start = start.split('-')
   end = end.split('-')
   sty = int(start[0])
@@ -88,30 +87,31 @@ def timeframe(start, end):
         return("End day has to be after start day")
   start = (sty, stm, std)
   end = (ey, em, ed)
-  dump(start, 'start.pkl')
-  dump(end, 'end.pkl')
-  return "Time Update of Adjusted Stock Prices: Successful"
+  with open('start.json', 'w') as startF:
+    json.dump(start, startF)
+  with open('end.json', 'w') as endF:
+    json.dump(end, endF)
+  times = []
+  times.append(f"Time Update of Adjusted Stock Prices: Successful")
+  times.append(f"New Start Time: {start}")
+  times.append(f"New End Time: {end}")
+  return times
 
 def nasdaq(ticker, days):
   stock_final = load('ticker.pkl')
-  start = load('start.pkl')
-  end = load('end.pkl')
+  with open('start.json') as startf:
+    start = json.load(startf)
+  with open('end.json') as endf:
+    end = json.load(endf)
   start = datetime.datetime(start[0], start[1], start[2]) # Start and end time to look at stock history (1 month from november-december 2020 in this model)
   end = datetime.datetime(end[0], end[1], end[2])
   days = int(days)
-  if (days < 2):
+  if (days < 1):
     return("Invalid number of days to predict")
   if stock_final.query("Name == '{}'".format(ticker)).empty:
     return("Invalid NASDAQ ticker or information not found")
   st = yf.download(ticker,start=start, end=end, progress=False)
   
-  #st = st.drop(columns=['Name'])
-  #st.plot(y='Adj Close') 
-  #plt.title('Date V. Actual Adj. Closing Price')
-  #plt.xlabel('Date (Days)')
-  #plt.ylabel('Adj. Closing Price ($)')
-  #plt.show()  
-
   #Makes another column called prediction
   st['Prediction'] = st[['Adj Close']].shift(-days)
 
@@ -148,12 +148,6 @@ def nasdaq(ticker, days):
   if (day==0):
     analysis.append(f"This means that the stock price is predicted to go down in the next {days} days")
 # When day 0 is the lowest, that means that the stock price is predicted to go down
-  #plt.title(f'{ticker} SVR Model: Days V. Predicted Adj. Closing Price')
-  #plt.ylabel('Predicted Stock Price Average ($)')
-  #plt.xlabel('Time (Days)')
-  #plt.ticklabel_format(useOffset=False)
-  #plt.plot(y_pred)
-  #plt.show()
   
   analysis.append(f"Prediction: {str(y_pred)}")
   return analysis

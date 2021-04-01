@@ -2,7 +2,6 @@ from flask import Flask
 from flask import jsonify
 import connexion
 from joblib import load
-from nasdaq import nasdaq, timeframe
 
 #load the model
 stock_final = load('ticker.pkl')
@@ -16,7 +15,7 @@ app.add_api("master.yaml")
 # create a URL route in our application for "/"
 @app.route("/")
 def home():
-    msg = {"Name": "NASDAQ Adjusted Closing Price Stock Predictor Application by Max Roesler", "Function 1": "Update Timeframe - /timeframe/<start>/<end>", "Function 2": "Get Prediction - /nasdaq/<ticker>/<days>"}
+    msg = {"Name": "NASDAQ Adjusted Closing Price Stock Predictor Application by Max Roesler", "Function 1": "Update Timeframe - /timeframe/<start>/<end>", "Function 2": "Get Prediction - /nasdaq/<ticker>/<days>", "Function 3": "Update NASDAQ Tickers - /dataframe/<start>/<end>"}
     return jsonify(msg)
 
 if __name__ == "__main__":

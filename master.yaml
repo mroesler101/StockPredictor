@@ -61,3 +61,35 @@ paths:
           description: Predicted prices
         '405':
           description: The inputs need to be correct
+  /dataframe/<start>/<end>/:
+    get:
+      tags:
+        - DATAFRAME
+      summary: Update stock tickers for NASDAQ model
+      operationId: nasdaq.collectDataframe
+      description: Updates stock tickers to use for stock prediction
+      parameters:
+           - in: path
+             name: start
+             required: true
+             schema:
+              type: string
+              items:
+               type: number
+              minItems: 3
+              maxItems: 3
+           - in: path
+             name: end
+             required: true
+             schema:
+              type: string
+              items:
+               type: number
+              minItems: 3
+              maxItems: 3
+      responses:
+        '200':
+          description: Successfully updated stock tickers
+        '405':
+          description: The inputs are invalid
+
