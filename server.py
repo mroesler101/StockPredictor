@@ -15,7 +15,7 @@ app.add_api("master.yaml")
 # create a URL route in our application for "/"
 @app.route("/")
 def home():
-    msg = {"Name": "NASDAQ Adjusted Closing Price Stock Predictor Application by Max Roesler", "Function 1": "Update Timeframe - /timeframe/<start>/<end>", "Function 2": "Get Prediction - /nasdaq/<ticker>/<days>", "Function 3": "Update NASDAQ Tickers - /dataframe/<start>/<end>"}
+    msg = {"Name": "NASDAQ Adjusted Closing Price Stock Predictor Application by Max Roesler", "Function 1": "Update Timeframe - /timeframe/<start>/<end>", "Function 2": "Get Prediction - /nasdaq/<ticker>/<days>", "Function 3": "Update NASDAQ Tickers (ONLY RUN IF TICKER FILE IS CORRUPT/NEEDS TICKERS) - /dataframe/<start>/<end>"}
     return jsonify(msg)
 
 if __name__ == "__main__":
