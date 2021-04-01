@@ -1,6 +1,6 @@
 def days(days):
   st['Prediction'] = st[['Adj Close']].shift(-days)
-
+  
   X = np.array(st.drop(['Prediction'],1))
 
 #Take the last 'days' rows to predict the next # of days
