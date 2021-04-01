@@ -1,5 +1,5 @@
 FROM ubuntu:18.04
-MAINTAINER Tyler Balson <tbalson@iu.edu>
+MAINTAINER Max Roesler <mroesle@iu.edu>
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -y
@@ -25,10 +25,10 @@ RUN python get-pip.py
 RUN pip install -U pip setuptools
 RUN pip install psutil
 
-#RUN git clone https://github.com/tbalson/cpu_test.git
+#RUN git clone https://github.com/mroesler101/StockPredictor.git
 
-WORKDIR predict_test/
-COPY . /predict_test
+WORKDIR stockpred/
+COPY . /stockpred
 
 #RUN git pull
 
