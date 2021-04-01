@@ -144,9 +144,9 @@ def nasdaq(ticker, days):
       max = y_pred[i]
       day = i+1 # for the accurate number of days and not the array number
   analysis = []
-  analysis.append(f"The highest predicted price in {days} days is day {day} with a predicted price of ${round(max, 2)} and an SVR score of: {regressor.score(x_test,y_test)}")
+  analysis.append(f"The highest predicted price of {ticker} in {days} days is day {day} with a predicted price of ${round(max, 2)} and an SVR score of: {regressor.score(x_test,y_test)}")
   if (day==0):
-    analysis.append(f"This means that the stock price is predicted to go down in the next {days} days")
+    analysis.append(f"This means that {ticker} is predicted to go down in the next {days} days")
 # When day 0 is the lowest, that means that the stock price is predicted to go down
   
   analysis.append(f"Prediction: {str(y_pred)}")
