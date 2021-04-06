@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.0.3-oas3
   title: StockPredictor
-  description: Adjusted Closing Price Stock Ticker Predictor
+  description: Adjusted Closing Price Stock Predictor
   contact:
     name: Max Roesler
 servers:

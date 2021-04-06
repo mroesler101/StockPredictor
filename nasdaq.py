@@ -2,7 +2,7 @@
 # Market categories feature in CSV file: Q = NASDAQ Global Select MarketSM; G = NASDAQ Global MarketSM; S = NASDAQ Capital Market
 # Round lot size feature: securities to be traded on exchange (typically 100)
 
-import yfinance as yf # Yahoo finance will provide historical stock prices to use for the predictions
+import yfinance as yf # Yahoo finance will provide historical stock information to use for the predictions
 import datetime
 import time
 import requests

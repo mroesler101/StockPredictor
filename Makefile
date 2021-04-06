@@ -11,7 +11,7 @@ docker-alli: docker-build docker-inter
 
 docker-build:
 	@echo "building the image from docker file..."
-	docker build --no-cache --pull -t svrstock .
+	docker build --pull -t svrstock .
 	@echo "image DONE"
 
 docker-start:
